@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LeetCode 2916 — Segment Tree Visualizer</title>
+<style>
+:root{--bg:#080d19;--panel:#111a2c;--panel2:#17243b;--ink:#f0f5ff;--muted:#9aaccb;--line:#2a3b5b;--cyan:#61e7df;--gold:#ffd166;--pink:#ff8fab;--green:#91f2ae;--purple:#c4a7ff}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#0a1020,#101a2d 55%,#0a1020);color:var(--ink);font:15px/1.45 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1440px;margin:auto;padding:26px 20px 50px}.eyebrow{font-size:.76rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);font-weight:850}
+h1{font-size:clamp(1.9rem,4vw,3.2rem);line-height:1.05;margin:9px 0}h2{font-size:1.08rem;margin:0 0 12px}h3{font-size:.94rem;margin:0 0 8px}.intro{color:var(--muted);max-width:880px;margin:0 0 20px}
+.panel{background:rgba(17,26,44,.96);border:1px solid var(--line);border-radius:18px;padding:18px;min-width:0}
+.topgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.wide{grid-column:1/-1}
+.arrayline{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.cells{display:flex;gap:12px}.cell{width:76px;height:82px;border:1px solid var(--line);border-radius:15px;background:#1a2943;display:grid;place-content:center;text-align:center;transition:.22s}.cell b{font-size:1.8rem}.cell small{font-size:.75rem;color:var(--muted)}.cell.current{border:2px solid var(--gold);background:#4a3c24;box-shadow:0 0 0 4px #ffd16616;transform:translateY(-3px)}.cell.updated{border:2px solid var(--cyan);background:#133b45}.cell.previous{border:2px solid var(--pink);background:#42283c}
+.meta{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:15px}.metric{background:var(--panel2);padding:12px;border-radius:12px}.metric span{display:block;color:var(--muted);font-size:.75rem}.metric b{display:block;font-size:1.2rem;margin-top:3px;overflow-wrap:anywhere}
+.controls{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}.btn{border:1px solid #40577e;background:#243653;color:var(--ink);border-radius:10px;padding:10px 15px;font:inherit;font-weight:800;cursor:pointer}.btn.primary{background:var(--cyan);color:#061522;border-color:var(--cyan)}.btn:disabled{opacity:.3;cursor:not-allowed}.progress{height:6px;background:#26334d;border-radius:8px;margin-top:14px;overflow:hidden}.progress div{height:100%;background:var(--cyan);width:0;transition:width .2s}
+.phase{display:inline-flex;align-items:center;gap:8px;background:#21314e;color:var(--cyan);font-size:.78rem;font-weight:800;border-radius:99px;padding:5px 10px}.phase-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan)}.function{font:800 1.18rem ui-monospace,SFMono-Regular,Menlo,monospace;margin:12px 0 7px;color:var(--gold)}.description{color:#d9e5fa;min-height:55px;margin:0 0 12px}.codehint{background:#091120;border:1px solid var(--line);border-radius:11px;padding:11px 13px;font: .84rem/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;overflow-wrap:anywhere}.codehint .hl{color:var(--cyan);font-weight:800}.stepnum{color:var(--muted);font-size:.82rem}
+.treegrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.treecard{background:#0c1424;border:1px solid var(--line);border-radius:15px;padding:13px;min-width:0}.treecard h3{display:flex;align-items:center;gap:8px}.legend{width:9px;height:9px;border-radius:50%;display:inline-block}.legend.sum{background:var(--cyan)}.legend.sq{background:var(--purple)}.legend.lazy{background:var(--gold)}
+.tree{width:100%;height:auto;display:block;max-height:265px}.edge{stroke:#465b7f;stroke-width:2;fill:none}.tnode{fill:#1a2942;stroke:#486083;stroke-width:1.5}.tnode.changed{fill:#244c55;stroke:var(--cyan);stroke-width:2.5}.tnode.lazychanged{fill:#4a3c24;stroke:var(--gold);stroke-width:2.5}.tnode.sqchanged{fill:#392e5c;stroke:var(--purple);stroke-width:2.5}.tree text{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;fill:var(--ink);font-size:12px;text-anchor:middle}.tree .range{fill:var(--muted);font-size:10px}.tree .nodeval{font-weight:800;font-size:13px}.tree .nodeidx{fill:#9db0d0;font-size:9px}
+.nodekey{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:.74rem;margin-top:4px}.tree-note{color:var(--muted);font-size:.8rem;margin:9px 0 0}
+.bottomgrid{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;margin-top:14px}.table{border-collapse:collapse;width:100%;font-size:.88rem}.table th,.table td{text-align:left;border-bottom:1px solid var(--line);padding:9px 6px}.table th{color:var(--muted);font-size:.76rem}.table tr.affected{background:#153944}.table tr.affected td:first-child{color:var(--cyan);font-weight:800}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.sumitem{background:var(--panel2);padding:12px;border-radius:12px}.sumitem span{font-size:.74rem;color:var(--muted);display:block}.sumitem b{font-size:1.4rem}.note{margin-top:12px;border-left:3px solid var(--gold);background:#1b263b;padding:10px 12px;border-radius:0 10px 10px 0;color:#dbe5f8}
+@media(max-width:900px){.treegrid{grid-template-columns:1fr}.tree{max-height:300px}.bottomgrid,.topgrid{grid-template-columns:1fr}.wide{grid-column:auto}}
+@media(max-width:500px){main{padding:18px 10px 32px}.panel{padding:13px}.cell{width:60px;height:70px}.meta{grid-template-columns:1fr 1fr}.summary{grid-template-columns:1fr}.function{font-size:1rem}}
+</style>
+</head>
+<body>
+<main>
+<div class="eyebrow">Interactive DSA walkthrough · LeetCode 2916</div>
+<h1>Watch the segment tree work</h1>
+<p class="intro">Use each step to follow the actual function flow for <b>nums = [1, 2, 1]</b>. The three trees are drawn separately: <code>sum[]</code>, <code>squareSum[]</code>, and <code>lazy[]</code>. The displayed node values change as each function runs.</p>
+
+<div class="topgrid">
+<section class="panel">
+<h2>01 · Input & current range</h2>
+<div class="arrayline"><div class="cells" id="array"></div><div><span class="phase" id="phase"><span class="phase-dot"></span> Ready</span><p class="stepnum" id="stepNum">Step 0 of 0</p></div></div>
+<div class="meta">
+<div class="metric"><span>Current function</span><b id="functionShort">—</b></div>
+<div class="metric"><span>Previous occurrence</span><b id="previous">—</b></div>
+<div class="metric"><span>Update range</span><b id="range">—</b></div>
+</div>
+<div class="controls">
+<button class="btn" id="prev">← Back</button><button class="btn primary" id="next">Next operation →</button><button class="btn" id="reset">Reset</button><button class="btn" id="auto">▶ Auto-play</button>
+</div>
+<div class="progress"><div id="bar"></div></div>
+</section>
+<section class="panel">
+<h2>02 · What happens now?</h2>
+<div class="function" id="functionName">Ready to begin</div>
+<p class="description" id="description">First, read the current value and find its previous occurrence. Then the algorithm updates only the starting indices whose distinct counts change.</p>
+<div class="codehint" id="codeHint">sumCounts(nums) → process right endpoint 0, then 1, then 2</div>
+<div class="note" id="reason">Follow the function name, then inspect how the tree nodes respond. Back and Next let you narrate each operation at your own pace.</div>
+</section>
+<section class="panel wide">
+<h2>03 · The three trees — live node values</h2>
+<p class="intro" style="margin-bottom:12px">Each circle shows the segment range and its array index. A colored node was changed by the current operation. These are the real recursive segment-tree nodes for the range [0, 2].</p>
+<div class="treegrid">
+<div class="treecard"><h3><i class="legend sum"></i> sum[]</h3><svg class="tree" id="sumTree" viewBox="0 0 360 250" role="img" aria-label="Segment tree showing sum values"></svg><div class="nodekey"><span>Distinct-count sums</span><span>cyan = changed</span></div></div>
+<div class="treecard"><h3><i class="legend sq"></i> squareSum[]</h3><svg class="tree" id="sqTree" viewBox="0 0 360 250" role="img" aria-label="Segment tree showing squared count sums"></svg><div class="nodekey"><span>Squared-count sums</span><span>purple = changed</span></div></div>
+<div class="treecard"><h3><i class="legend lazy"></i> lazy[]</h3><svg class="tree" id="lazyTree" viewBox="0 0 360 250" role="img" aria-label="Segment tree showing lazy tags"></svg><div class="nodekey"><span>Pending increments</span><span>gold = pending</span></div></div>
+</div>
+</section>
+</div>
+
+<div class="bottomgrid">
+<section class="panel">
+<h2>04 · Subarrays ending at this index</h2>
+<table class="table"><thead><tr><th>Start</th><th>Subarray</th><th>Distinct d</th><th>d²</th></tr></thead><tbody id="subarrays"></tbody></table>
+<p class="stepnum" id="tableCaption">Advance to see the contribution from this right endpoint.</p>
+</section>
+<section class="panel">
+<h2>05 · Answer accumulator</h2>
+<div class="summary"><div class="sumitem"><span>Current endpoint adds</span><b id="contribution">0</b></div><div class="sumitem"><span>Running answer</span><b id="answer">0</b></div><div class="sumitem"><span>Final expected</span><b>15</b></div></div>
+<div class="note" id="formula">For an increment by v across L positions: newSquareSum = oldSquareSum + 2 × v × oldSum + L × v².</div>
+</section>
+</div>
+<p class="intro" style="margin-top:16px">Recording tip: keep the three trees on screen, click Next operation, and explain the function name before describing the highlighted nodes.</p>
+</main>
+<script>
+const nums=[1,2,1], MOD=1000000007;
+const $=id=>document.getElementById(id);
+const ranges={0:[0,2],1:[0,1],2:[2,2],3:[0,0],4:[1,1]};
+const coords={0:[180,44],1:[100,125],2:[260,125],3:[55,210],4:[145,210]};
+const edges=[[0,1],[0,2],[1,3],[1,4]];
+const state={sum:Array(5).fill(0),sq:Array(5).fill(0),lazy:Array(5).fill(0)};
+let events=[], cursor=-1, timer=null, currentStep=-1;
+
+function cloneState(s){return {sum:s.sum.slice(),sq:s.sq.slice(),lazy:s.lazy.slice()}}
+function buildEvents(){
+ events=[];const s={sum:Array(5).fill(0),sq:Array(5).fill(0),lazy:Array(5).fill(0)};
+ const last={};
+ function record(title,fn,desc,code,reason,idx,changed=[],range=null){
+  events.push({title,fn,desc,code,reason,idx,changed:changed.slice(),range,state:cloneState(s),lastSeen:{...last}});
+ }
+ function apply(node,l,r,delta,idx){
+  const len=r-l+1, oldSum=s.sum[node], oldSq=s.sq[node];
+  s.sq[node]=(s.sq[node]+2*delta*oldSum+len*delta*delta)%MOD;
+  s.sum[node]=(s.sum[node]+len*delta)%MOD;
+  record('Apply range increment','apply(node, left, right, delta)',
+   `Node ${node} represents [${l}, ${r}]. Every represented distinct count increases by ${delta}. Its old sum was ${oldSum} and old squared sum was ${oldSq}.`,
+   `squareSum[${node}] += 2 × ${delta} × ${oldSum} + ${len} × ${delta}²\\nsum[${node}] += ${len} × ${delta}\\nlazy[${node}] += ${delta}`,
+   `This node stores aggregate values for ${len} starting position(s). The square formula uses the OLD sum before updating sum[].`,idx,[node], [l,r]);
+ }
+ function push(node,l,r,idx){
+  if(s.lazy[node]===0||l===r)return;
+  const mid=Math.floor((l+r)/2), val=s.lazy[node];
+  record('Apply pending tag to this node','lazyAddition(node, left, right, lazy[node])',
+   `Node ${node} has a pending increment of ${val}. First apply it to this node's stored aggregate.`,
+   `squareSum[${node}] += 2 × ${val} × sum[${node}] + length × ${val}²\\nsum[${node}] += length × ${val}`,
+   'The node aggregate is brought up to date before the recursion descends.',idx,[node],[l,r]);
+  apply(node,l,r,val,idx);
+  s.lazy[node*2+1]+=val;s.lazy[node*2+2]+=val;
+  record('Pass tag to children; clear parent','lazy[child] += pending',
+   `The two children are marked to receive +${val} when they are visited. Node ${node}'s tag is now cleared.`,
+   `lazy[${node*2+1}] += ${val}\\nlazy[${node*2+2}] += ${val}\\nlazy[${node}] = 0`,
+   'Lazy propagation defers child work. The children will apply their tags only when needed.',idx,[node,node*2+1,node*2+2],[l,r]);
+  s.lazy[node]=0;
+ }
+ function update(node,l,r,ql,qr,idx){
+  record('Enter update()','update(node, left, right, ql, qr)',
+   `Visit node ${node}, which covers [${l}, ${r}]. The requested update range is [${ql}, ${qr}].`,
+   `update(${node}, ${l}, ${r}, ${ql}, ${qr})`,'Each recursive call decides whether this segment is outside the range, fully covered, or needs to split.',idx,[node],[ql,qr]);
+  if(l>qr||r<ql||l>r){
+   record('Skip non-overlapping segment','if (right < ql || left > qr) return',
+    `Segment [${l}, ${r}] does not overlap [${ql}, ${qr}], so it remains unchanged.`,
+    `return;`,'No starting position in this node needs a distinct-count increment.',idx,[node],[ql,qr]);return;
+  }
+  if(ql<=l&&r<=qr){
+   record('Full segment is covered','if (ql <= left && right <= qr)',
+    `The entire segment [${l}, ${r}] is inside the update range. Apply +1 to the whole node.`,
+    `apply(${node}, ${l}, ${r}, 1)`,'This is where the segment tree saves work: one lazy range operation represents every start in this segment.',idx,[node],[l,r]);
+   apply(node,l,r,1,idx);
+   if(l!==r){s.lazy[node*2+1]+=1;s.lazy[node*2+2]+=1;
+    record('Mark children as pending','lazy[child] += 1',
+     `The parent aggregate is updated now; its children are marked to receive +1 when visited later.`,
+     `lazy[${node*2+1}] += 1\\nlazy[${node*2+2}] += 1`,
+     'This is lazy propagation: postpone child updates until their values are needed.',idx,[node,node*2+1,node*2+2],[l,r]);}
+   return;
+  }
+  push(node,l,r,idx);
+  const mid=Math.floor((l+r)/2);
+  record('Split into child segments','mid = left + (right - left) / 2',
+   `The range is only partially covered, so split [${l}, ${r}] into [${l}, ${mid}] and [${mid+1}, ${r}].`,
+   `update(${node*2+1}, ${l}, ${mid}, ${ql}, ${qr})\\nupdate(${node*2+2}, ${mid+1}, ${r}, ${ql}, ${qr})`,
+   'Only the child segments overlapping the target range will change.',idx,[node,node*2+1,node*2+2],[ql,qr]);
+  update(node*2+1,l,mid,ql,qr,idx);update(node*2+2,mid+1,r,ql,qr,idx);
+  s.sum[node]=(s.sum[node*2+1]+s.sum[node*2+2])%MOD;
+  s.sq[node]=(s.sq[node*2+1]+s.sq[node*2+2])%MOD;
+  record('Recalculate parent aggregates','pull up from children',
+   `After the recursive updates, node ${node} combines its children's results.`,
+   `sum[${node}] = sum[${node*2+1}] + sum[${node*2+2}]\\nsquareSum[${node}] = squareSum[${node*2+1}] + squareSum[${node*2+2}]`,
+   'Every parent must reflect its updated children so the root always represents the full array of starting positions.',idx,[node],[l,r]);
+ }
+ for(let i=0;i<nums.length;i++){
+  const prev=Object.prototype.hasOwnProperty.call(last,nums[i])?last[nums[i]]:-1;
+  const left=prev+1;
+  record('Read current value','sumCounts() → nums[right]',
+   `Process nums[${i}] = ${nums[i]}. We need to update the subarrays ending at right index ${i}.`,
+   `right = ${i}\\nvalue = nums[${i}] = ${nums[i]}`,
+   'The algorithm handles one right endpoint at a time; the root’s squareSum becomes this endpoint’s contribution after the update finishes.',i,[],[left,i]);
+  record('Find previous occurrence','lastSeen[value]',
+   prev===-1?`Value ${nums[i]} has not appeared before. Treat its previous occurrence as -1.`:`Value ${nums[i]} last appeared at index ${prev}. Starts at or before ${prev} already contain this value.`,
+   `left = lastSeen[${nums[i]}] + 1 = ${prev} + 1 = ${left}`,
+   `Only subarrays starting in [${left}, ${i}] gain a new distinct value. Earlier starts already contain ${nums[i]}.`,i,[],[left,i]);
+  update(0,0,nums.length-1,left,i,i);
+  record('Read root contribution','answer += squareSum[root]',
+   `All updates for right index ${i} are complete. The root squareSum is the sum of squared distinct counts for every subarray ending here.`,
+   `contribution = squareSum[0] = ${s.sq[0]}`,
+   `Add ${s.sq[0]} to the running answer. The answer after this endpoint is ${events.filter(e=>e.title==='Read root contribution'&&e.idx<=i).reduce((a,e)=>a+e.state.sq[0],0)}.`,i,[0],[0,nums.length-1]);
+  last[nums[i]]=i;
+  record('Update last occurrence','lastSeen[value] = right',
+   `Store the newest occurrence: lastSeen[${nums[i]}] = ${i}. The next duplicate can use this index.`,
+   `lastSeen[${nums[i]}] = ${i}`,'This map/array is separate from the segment tree; it decides the next update range.',i,[],[left,i]);
+ }
+}
+function svgTree(id,key,kind,event){
+ const svg=$(id), vals=event.state[key], changed=new Set(event.changed||[]);
+ let out='';
+ edges.forEach(([a,b])=>{const [x1,y1]=coords[a],[x2,y2]=coords[b];out+=`<line class="edge" x1="${x1}" y1="${y1+22}" x2="${x2}" y2="${y2-21}"/>`});
+ for(let node=0;node<5;node++){
+  const [x,y]=coords[node], [l,r]=ranges[node];
+  let cls='tnode';
+  if(changed.has(node))cls+=kind==='sum'?' changed':kind==='sq'?' sqchanged':(vals[node]!==0?' lazychanged':' changed');
+  out+=`<g><circle class="${cls}" cx="${x}" cy="${y}" r="29"/><text class="nodeidx" x="${x}" y="${y-12}">node ${node}</text><text class="nodeval" x="${x}" y="${y+4}">${vals[node]}</text><text class="range" x="${x}" y="${y+17}">[${l},${r}]</text></g>`;
+ }
+ svg.innerHTML=out;
+}
+function renderArray(e){
+ $('array').innerHTML=nums.map((v,i)=>{
+  let cls='cell';if(i===e.idx)cls+=' current';
+  if(e.range&&i>=e.range[0]&&i<=e.range[1]&&e.title!=='Read current value')cls+=' updated';
+  if(e.idx>=0&&i<e.idx&&nums[i]===nums[e.idx]&&i===(e.lastSeen[nums[e.idx]]??-999))cls+=' previous';
+  return `<div class="${cls}"><b>${v}</b><small>index ${i}</small></div>`;
+ }).join('');
+}
+function render(){
+ if(cursor<0){
+  const blank={idx:-1,changed:[],state:{sum:Array(5).fill(0),sq:Array(5).fill(0),lazy:Array(5).fill(0)},lastSeen:{},title:'Ready',fn:'—',desc:'Start the walkthrough. Each click advances one real operation in the algorithm.',code:'sumCounts(nums) → update range → read root → add contribution',reason:'The highlighted function and three trees will update together.',range:null};
+  paint(blank,0);$('stepNum').textContent=`Step 0 of ${events.length}`;$('phase').innerHTML='<span class="phase-dot"></span> Ready';$('functionShort').textContent='—';$('previous').textContent='—';$('range').textContent='—';$('contribution').textContent='0';$('answer').textContent='0';$('subarrays').innerHTML='<tr><td colspan="4" class="muted">Step forward to inspect subarrays.</td></tr>';return;
+ }
+ const e=events[cursor];paint(e,cursor+1);
+ $('stepNum').textContent=`Operation ${cursor+1} of ${events.length}`;
+ $('phase').innerHTML=`<span class="phase-dot"></span> right index ${e.idx+1} of ${nums.length}`;
+ $('functionShort').textContent=e.fn.split('(')[0];
+ $('previous').textContent=e.idx<0?'—':(e.lastSeen[nums[e.idx]]??-1);
+ $('range').textContent=e.range?`[${e.range[0]}, ${e.range[1]}]`:'—';
+ $('bar').style.width=`${(cursor+1)/events.length*100}%`;
+ $('contribution').textContent=e.idx<0?0:e.state.sq[0];
+ let running=0;for(let j=0;j<=cursor;j++){if(events[j].title==='Read root contribution')running=(running+events[j].state.sq[0])%MOD;}
+ $('answer').textContent=running;
+ const sub=$('subarrays');
+ if(e.idx<0){sub.innerHTML='<tr><td colspan="4" class="muted">No endpoint processed yet.</td></tr>';}
+ else{
+  const rows=[];for(let l=0;l<=e.idx;l++){const a=nums.slice(l,e.idx+1),d=new Set(a).size;rows.push({l,a,d,sq:d*d,affected:e.range&&l>=e.range[0]&&l<=e.range[1]});}
+  sub.innerHTML=rows.map(r=>`<tr class="${r.affected?'affected':''}"><td>${r.l}</td><td>[${r.a.join(', ')}]</td><td>${r.d}</td><td>${r.sq}</td></tr>`).join('');
+ }
+}
+function paint(e,num){
+ $('functionName').textContent=e.title;$('description').textContent=e.desc;$('codeHint').textContent=e.code;$('reason').textContent=e.reason;
+ svgTree('sumTree','sum','sum',e);svgTree('sqTree','sq','sq',e);svgTree('lazyTree','lazy','lazy',e);
+ renderArray(e);$('prev').disabled=cursor<=0;$('next').disabled=cursor>=events.length-1;
+ $('tableCaption').textContent=e.idx<0?'Advance to see the contribution from this right endpoint.':`Current right endpoint = ${e.idx}. Highlighted starts are inside the active update range.`;
+ $('formula').textContent='For each increment by v over L positions: newSum = oldSum + L·v; newSquareSum = oldSquareSum + 2·v·oldSum + L·v².';
+}
+function stop(){if(timer){clearInterval(timer);timer=null;}$('auto').textContent='▶ Auto-play';}
+$('prev').addEventListener('click',()=>{stop();cursor=Math.max(-1,cursor-1);render()});
+$('next').addEventListener('click',()=>{stop();cursor=Math.min(events.length-1,cursor+1);render()});
+$('reset').addEventListener('click',()=>{stop();cursor=-1;render()});
+$('auto').addEventListener('click',()=>{if(timer){stop();return;}if(cursor>=events.length-1)cursor=-1;$('auto').textContent='Ⅱ Pause';timer=setInterval(()=>{cursor++;render();if(cursor>=events.length-1)stop();},1500);render()});
+buildEvents();render();
+</script>
+</body>
+</html>
